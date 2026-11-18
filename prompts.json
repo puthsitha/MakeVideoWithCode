@@ -1,0 +1,60 @@
+{
+  "title": "Filial Duty vs Your Own Dreams - Choosing a Career Your Parents Didn't Pick",
+  "aspect_ratio": "9:16",
+  "resolution": "1080x1920",
+  "fps": 30,
+  "duration_sec": 120,
+  "color_lut": "Nocturnal Amber & Slate Editorial LUT (#111318 shadows, #EDE3D2 parchment highlights, #D9822B amber key, #4A6B82 slate shadows, #C84B31 crimson accent)",
+  "negative_prompt": "Do NOT bake, burn, or embed any text, captions, or subtitles into the video frames.",
+  "scenes": [
+    {
+      "id": "01_intro",
+      "start": 0,
+      "end": 5,
+      "alignment": "Golden Ratio focal split at y=733px, central symmetry axis x=540px, 10% safe margin (108px/192px)",
+      "prompt": "2.5D dark graphic-novel & textured colored-pencil animation. Close-up of a young adult standing on exact central axis x=540px inside an ornate warm-amber birdcage silhouette whose bars gently dissolve from parental hands above at y=420px. Chiaroscuro #111318 background, warm #D9822B rim light on #EDE3D2 skin highlights. Slow push-in camera."
+    },
+    {
+      "id": "02_verse_1a",
+      "start": 5,
+      "end": 20,
+      "alignment": "Rule of Thirds vertical post at x=540px, left signpost tip at x=216px,y=640px, right signpost tip at x=864px,y=960px, youth at x=360px,y=1280px",
+      "prompt": "Warm textured parchment editorial illustration matching colored-pencil grain. Wooden crossroads post on x=540px with two blank wooden directional planks bearing purely visual carved icons—left icon of a medical caduceus, right icon of balanced justice scales, zero letters or words. Conflicted youth in terracotta sweater at lower-left third (x=360px,y=1280px). Muted #EDE3D2 paper texture, #D9822B terracotta, #4A6B82 slate."
+    },
+    {
+      "id": "03_verse_1b",
+      "start": 20,
+      "end": 42,
+      "alignment": "Symmetrical parental silhouettes at x=180px & x=900px, child centered at x=540px,y=1187px (Golden Ratio), chains arcing symmetrically from y=733px to y=1280px",
+      "prompt": "Stylized 2.5D editorial transition blending dark chiaroscuro and minimalist vector metaphor. Exhausted parents flanking left (x=180px) and right (x=900px), holding silver metallic chains and glowing amber puppet threads connected to blank wooden hanging plaques bearing tiny briefcase, ring, and star icons (no text). Child centered at Golden Ratio y=1187px looking down with quiet weight. Deep #111318 shadows, #4A6B82 cool coat tones, #D9822B thread glow."
+    },
+    {
+      "id": "04_hook_midpoint",
+      "start": 42,
+      "end": 58,
+      "alignment": "Bilateral symmetry across x=540px; left parent focal eye-line at x=360px,y=640px, right parent at x=720px,y=640px; satirical skyscraper bundle centered at x=390px,y=1080px",
+      "prompt": "Witty bold flat-vector editorial satire with subtle chiaroscuro vignette. Stylized mother on left third (x=360px) proudly cradling a miniature grey corporate office skyscraper swaddled in a cobalt-blue baby blanket, beside a bewildered father on right third (x=720px) holding a crying swaddled infant. Punchy #C84B31 crimson backdrop vignette, #EAB308 warm gold highlights, #4A6B82 suit tones, crisp geometric shapes, rhythmic bounce motion."
+    },
+    {
+      "id": "05_verse_2a",
+      "start": 58,
+      "end": 82,
+      "alignment": "Rule of Thirds upper-left lamp at x=270px,y=540px casting 45-degree cone onto protagonist at x=640px,y=1200px",
+      "prompt": "Moody graphic-novel study scene at night. Young adult seated at a wooden desk (x=640px,y=1200px) beneath a warm amber desk lamp at upper-left third (x=270px,y=540px). Gently floating translucent thought clouds dissolve into a soft golden horizon window revealing parents walking through storm rain in flashback silhouette. Deep #111318 charcoal, #D9822B lamp glow, #4A6B82 rain tones."
+    },
+    {
+      "id": "06_verse_2b",
+      "start": 82,
+      "end": 104,
+      "alignment": "Golden Ratio horizon at y=733px; rising blueprint bridge spanning x=180px to x=900px across y=1187px",
+      "prompt": "Editorial 2.5D animation shifting from night to dawn. Same protagonist sketching architectural and creative blueprints across a lit drafting table; glowing amber lines transform into a sturdy geometric bridge spanning across a canyon toward warm sunrise light. Parents stand calmly on the left bank watching with softening posture. Palette shifts from #4A6B82 slate into luminous #D9822B amber and #EDE3D2 cream."
+    },
+    {
+      "id": "07_outro",
+      "start": 104,
+      "end": 120,
+      "alignment": "Strict central symmetry x=540px, hero silhouette at y=1080px, upper-third open breathing space y=256px-640px",
+      "prompt": "Iconic closing frame: solitary figure seen from behind at exact center x=540px,y=1080px stepping onto an open sunlit crossroads where wooden signposts point in three open directions with clean blank arrows (no text). Dramatic golden-hour rim light in #D9822B and #EDE3D2 against deep #111318 foreground vignette, leaving clean breathing space in upper and lower 15% safe zones."
+    }
+  ]
+}

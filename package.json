@@ -1,0 +1,15 @@
+{
+  "name": "filial-duty-vs-dreams-video",
+  "version": "1.0.0",
+  "description": "9:16 1080p30 video production pipeline, audio cloning, QA gate, and preview player",
+  "private": true,
+  "scripts": {
+    "check": "bash setup_env.sh",
+    "audio": "python3 generate_audio.py",
+    "render": "bash render_video.sh",
+    "qa": "python3 qa_gate.py --video output/final_video.mp4"
+  },
+  "dependencies": {
+    "fluent-ffmpeg": "^2.1.3"
+  }
+}

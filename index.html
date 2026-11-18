@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Preview Player — Filial Duty vs Your Own Dreams (9:16 • 1080p30)</title>
+  <style>
+    :root {
+      --phi: 1.618;
+      --unit: 0.5rem;
+      --gap-sm: calc(var(--unit) * 1.5);       /* 0.75rem */
+      --gap-md: calc(var(--unit) * 2.5);       /* 1.25rem */
+      --gap-lg: calc(var(--unit) * 4);         /* 2rem */
+      --radius-md: calc(var(--unit) * 1.5);
+      --radius-lg: calc(var(--unit) * 2.5);
+
+      --bg-obsidian: #111318;
+      --bg-panel: #191d26;
+      --bg-elevated: #222834;
+      --border-subtle: rgba(237, 227, 210, 0.14);
+      --text-parchment: #ede3d2;
+      --text-muted: #9aa7b8;
+      --accent-amber: #d9822b;
+      --accent-slate: #4a6b82;
+      --accent-crimson: #c84b31;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background:
+        radial-gradient(circle at 20% 15%, rgba(217, 130, 43, 0.12), transparent 45%),
+        radial-gradient(circle at 80% 85%, rgba(74, 107, 130, 0.14), transparent 50%),
+        var(--bg-obsidian);
+      color: var(--text-parchment);
+      display: grid;
+      place-items: center;
+      padding: clamp(1rem, 2.5vw, 2.25rem);
+      line-height: 1.5;
+    }
+
+    .studio-shell {
+      width: min(100%, calc(64rem * 1.05));
+      display: grid;
+      grid-template-columns: minmax(280px, calc(100vh * 0.48)) 1fr;
+      gap: var(--gap-lg);
+      align-items: start;
+      background: rgba(25, 29, 38, 0.9);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: var(--gap-lg);
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55);
+    }
+
+    @media (max-width: 860px) {
+      .studio-shell {
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
+    }
+
+    /* Strict 9:16 1080x1920 Responsive Viewport */
+    .stage-frame {
+      position: relative;
+      width: 100%;
+      max-width: calc(405px);
+      aspect-ratio: 9 / 16;
+      background: #090b0e;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid rgba(217, 130, 43, 0.35);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.65);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      background: #0b0d11;
+    }
+
+    .safe-guides {
+      position: absolute;
+      inset: 10%;
+      border: 1px dashed rgba(237, 227, 210, 0.22);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .stage-frame.show-guides .safe-guides {
+      opacity: 1;
+    }
+
+    .caption-overlay {
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      bottom: 12%;
+      text-align: center;
+      pointer-events: none;
+      font-size: clamp(0.85rem, 1.35vw, 1.05rem);
+      font-weight: 600;
+      line-height: 1.35;
+      color: var(--text-parchment);
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95);
+      background: rgba(17, 19, 24, 0.72);
+      padding: calc(var(--unit) * 0.75) calc(var(--unit) * 1.25);
+      border-radius: calc(var(--unit) * 1);
+      border: 1px solid rgba(217, 130, 43, 0.28);
+      min-height: 2.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      white-space: pre-line;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    .caption-overlay.active {
+      opacity: 1;
+    }
+
+    .empty-poster {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--gap-sm);
+      padding: var(--gap-lg);
+      text-align: center;
+      background: radial-gradient(circle at 50% 38%, rgba(217, 130, 43, 0.18), #0d1016 70%);
+      pointer-events: none;
+    }
+
+    .empty-poster.hidden {
+      display: none;
+    }
+
+    .controls-panel {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: var(--gap-md);
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--unit);
+    }
+
+    .pill {
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: calc(var(--unit) * 0.5) calc(var(--unit) * 1.25);
+      border-radius: 999px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+    }
+
+    .pill.amber {
+      border-color: rgba(217, 130, 43, 0.45);
+      color: var(--accent-amber);
+    }
+
+    h1 {
+      font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+      line-height: 1.25;
+      color: var(--text-parchment);
+    }
+
+    .subtitle-meta {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+    }
+
+    .card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: var(--gap-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--gap-sm);
+    }
+
+    .seek-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: var(--gap-sm);
+      align-items: center;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent-amber);
+      cursor: pointer;
+      height: 6px;
+    }
+
+    .timecode {
+      font-variant-numeric: tabular-nums;
+      font-size: 0.85rem;
+      color: var(--text-parchment);
+      min-width: 7.5rem;
+      text-align: right;
+    }
+
+    .btn-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--gap-sm);
+    }
+
+    .download-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--gap-sm);
+    }
+
+    button,
+    .file-label {
+      appearance: none;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-panel);
+      color: var(--text-parchment);
+      padding: calc(var(--unit) * 1.25) calc(var(--unit) * 1.75);
+      border-radius: calc(var(--unit) * 1.15);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: transform 0.12s ease, border-color 0.15s ease, background 0.15s ease;
+    }
+
+    button:hover,
+    .file-label:hover {
+      border-color: var(--accent-amber);
+      background: #283040;
+      transform: translateY(-1px);
+    }
+
+    button.primary {
+      background: var(--accent-amber);
+      color: #111318;
+      border-color: var(--accent-amber);
+    }
+
+    button.primary:hover {
+      background: #e6923d;
+    }
+
+    button.danger {
+      border-color: rgba(200, 75, 49, 0.55);
+      color: #f3a696;
+    }
+
+    .utility-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--gap-sm);
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .toggle-check {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      cursor: pointer;
+    }
+
+    .status-line {
+      font-size: 0.82rem;
+      color: var(--accent-amber);
+      min-height: 1.25rem;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <main class="studio-shell">
+    <!-- Left Column: 9:16 1080p Responsive Stage -->
+    <section class="stage-frame" id="stageFrame" aria-label="9:16 Video Preview Stage">
+      <video id="videoPlayer" controls preload="auto" playsinline src="output/final_video.mp4?v=4"></video>
+      <audio id="audioSync" preload="auto" src="output/merged_audio.wav?v=4"></audio>
+      <div class="safe-guides" aria-hidden="true"></div>
+      <div class="caption-overlay" id="captionOverlay" aria-live="polite"></div>
+      <div class="empty-poster" id="emptyPoster">
+        <span class="pill amber">1080 &times; 1920 &bull; 30 FPS</span>
+        <strong>Render Not Loaded Yet</strong>
+        <p style="font-size:0.84rem;color:#9aa7b8;">
+          Place <code>output/final_video.mp4</code> in this project or load a local MP4 below.
+          Caption preview still runs on the timeline.
+        </p>
+      </div>
+    </section>
+
+    <!-- Right Column: Controls, Seek Bar & Downloads -->
+    <section class="controls-panel">
+      <div class="badge-row">
+        <span class="pill amber">9:16 Portrait</span>
+        <span class="pill">1080p @ 30fps</span>
+        <span class="pill">02:00 Duration</span>
+        <span class="pill">QA Gate &ge; 8.0</span>
+      </div>
+
+      <header>
+        <h1>កាតព្វកិច្ចកូន ឬ ក្តីសុបិនខ្លួនឯង</h1>
+        <p class="subtitle-meta">ការជ្រើសរើសអាជីពដែលឪពុកម្តាយមិនបានរើសឱ្យ &mdash; Khmer 2.5D + Stick-Man Preview</p>
+      </header>
+
+      <div class="card">
+        <div class="seek-row">
+          <input id="seekSlider" type="range" min="0" max="120" step="0.05" value="0" aria-label="Seek timeline" />
+          <span class="timecode" id="timecode">00:00 / 02:00</span>
+        </div>
+
+        <div class="btn-grid">
+          <button type="button" id="playBtn" class="primary">&#9654; Play</button>
+          <button type="button" id="pauseBtn">&#10074;&#10074; Pause</button>
+          <button type="button" id="stopBtn" class="danger">&#9632; Stop</button>
+        </div>
+
+        <div class="utility-row">
+          <label class="toggle-check">
+            <input type="checkbox" id="toggleCaptions" checked />
+            <span>Preview SRT Captions</span>
+          </label>
+          <label class="toggle-check">
+            <input type="checkbox" id="toggleGuides" />
+            <span>Show 10% Safe Margins</span>
+          </label>
+          <label class="toggle-check">
+            <input type="checkbox" id="toggleWavSync" />
+            <span>Sync WAV Audio Fallback</span>
+          </label>
+          <label class="toggle-check" style="min-width:9rem;">
+            <span>Vol</span>
+            <input id="volumeSlider" type="range" min="0" max="1" step="0.05" value="1" aria-label="Volume" />
+          </label>
+          <label class="file-label" for="localVideoInput">Load Local MP4</label>
+          <input id="localVideoInput" type="file" accept="video/mp4,video/webm" />
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="download-grid">
+          <button type="button" id="downloadVideoBtn" class="primary">&#11015; Download Video</button>
+          <button type="button" id="downloadSrtBtn">&#11015; Download Subtitle (.srt)</button>
+        </div>
+        <p class="status-line" id="statusLine">Ready. Press Play to preview timeline or load your rendered MP4.</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const SRT_CONTENT = `1
+00:00:00,000 --> 00:00:01,489
+ឪពុកម្តាយស្រឡាញ់អ្នក...
+
+2
+00:00:01,489 --> 00:00:05,760
+ប៉ុន្តែហេតុអ្វីក្តីសុបិនពួកគាត់
+ធ្វើឱ្យអ្នកមានអារម្មណ៍ដូចជាប់ទ្រុង?
+
+3
+00:00:06,450 --> 00:00:09,146
+តាំងពីអ្នកមិនទាន់
+ស្គាល់ឈ្មោះខ្លួនឯងផង
+
+4
+00:00:09,146 --> 00:00:11,987
+ព្រួញពីរត្រូវបានកំណត់
+អនាគតអ្នករួចទៅហើយ។
+
+5
+00:00:11,987 --> 00:00:15,047
+មួយចង្អុលទៅគ្រូពេទ្យ។
+មួយទៀតចង្អុលទៅមេធាវី។
+
+6
+00:00:15,047 --> 00:00:18,690
+មានសុវត្ថិភាព មានកិត្តិយស
+និងត្រូវបានគាំទ្រជាស្រេច។
+
+7
+00:00:19,450 --> 00:00:24,247
+អស់រយៈពេលជាច្រើនឆ្នាំ
+កតញ្ញូតាធម៌មានន័យថាការយល់ព្រម។
+
+8
+00:00:24,247 --> 00:00:28,385
+អ្នកមើលឃើញការខិតខំ
+ទាំងយប់ទាំងថ្ងៃរបស់ពួកគាត់
+
+9
+00:00:28,385 --> 00:00:31,865
+ហើយការដឹងគុណក្លាយជា
+ខ្សែចងមើលមិនឃើញ...
+
+10
+00:00:31,865 --> 00:00:35,815
+ទាញដៃអ្នកទៅកាន់ជីវិត
+ដែលអ្នកមិនដែលជ្រើសរើស។
+
+11
+00:00:35,815 --> 00:00:39,577
+ពេលអ្នកដទៃសម្រេចចិត្តធំៗ
+ទាំងអស់ជំនួសអ្នក
+
+12
+00:00:39,577 --> 00:00:45,690
+អ្នកភ្ញាក់ឡើងនៅអាយុម្ភៃប្រាំឆ្នាំ
+មិនដឹងត្រូវសម្រេចចិត្តយ៉ាងណាឡើយ។
+
+13
+00:00:46,450 --> 00:00:48,482
+សូមសួរដោយស្មោះត្រង់មួយសំណួរ។
+
+14
+00:00:48,482 --> 00:00:52,981
+តើពួកគាត់កំពុងចិញ្ចឹមមនុស្សម្នាក់
+ឬបីអគារការិយាល័យក្នុងភួយទារក?
+
+15
+00:00:52,981 --> 00:00:56,827
+ព្រោះបើអាជីពរបស់អ្នក
+ជាពានរង្វាន់សំណព្វចិត្តពួកគាត់...
+
+16
+00:00:56,827 --> 00:01:00,310
+តើអ្នកណាជាអ្នកទៅធ្វើការ
+នៅព្រឹកថ្ងៃចន្ទពិតប្រាកដ?
+
+17
+00:01:01,250 --> 00:01:04,563
+នេះជាការពិតដែលគ្មាននរណា
+ប្រាប់អ្នកនៅតុបាយឡើយ។
+
+18
+00:01:04,563 --> 00:01:07,725
+ការជ្រើសរើសផ្លូវខ្លួនឯង
+មិនមែនជាការក្បត់ទេ។
+
+19
+00:01:07,725 --> 00:01:11,866
+ការគោរពការលះបង់របស់ពួកគាត់
+គឺមិនខ្ជះខ្ជាយសេរីភាពអ្នកឡើយ។
+
+20
+00:01:11,866 --> 00:01:15,029
+ដំបូន្មានពួកគាត់កើតចេញពី
+ការភ័យខ្លាចភាពងងឹត
+
+21
+00:01:15,029 --> 00:01:19,170
+ព្រោះពួកគាត់ធ្លាប់ឆ្លងកាត់
+ពិភពលោកគ្មានសំណាញ់សុវត្ថិភាព។
+
+22
+00:01:20,750 --> 00:01:25,253
+ដូច្នេះ ឈប់ឈ្លោះក្នុងចិត្ត
+ហើយកសាងភស្តុតាងក្រោមពន្លឺថ្ងៃ។
+
+23
+00:01:25,253 --> 00:01:28,952
+រក្សាសន្តិភាពក្នុងគ្រួសារ
+ខណៈពេលអ្នកពង្រឹងជំនាញ
+
+24
+00:01:28,952 --> 00:01:33,294
+សន្សំប្រាក់ទុករស់បានប្រាំមួយខែ
+ហើយបង្ហាញផែនការពិតប្រាកដ
+
+25
+00:01:33,294 --> 00:01:35,545
+មិនមែនត្រឹមតែក្តីប្រាថ្នាទេ។
+
+26
+00:01:35,545 --> 00:01:40,450
+ពេលភាពភ័យខ្លាចជួបការត្រៀមខ្លួន
+ការស្រឡាញ់នឹងមានកន្លែងដកដង្ហើម។
+
+27
+00:01:42,750 --> 00:01:46,222
+អ្នកមានជីវិតតែមួយគត់
+ដើម្បីចុះហត្ថលេខាដោយខ្លួនឯង។
+
+28
+00:01:46,222 --> 00:01:48,898
+សូមប្រាប់ខ្ញុំក្នុងមតិយោបល់ឥឡូវនេះ...
+
+29
+00:01:48,898 --> 00:01:53,310
+តើអាជីពក្នុងក្តីសុបិនមួយណា
+ដែលអ្នកទាមទារសម្រាប់ខ្លួនឯងថ្ងៃនេះ?`;
+
+    const video = document.getElementById("videoPlayer");
+    const audioSync = document.getElementById("audioSync");
+    const stageFrame = document.getElementById("stageFrame");
+    const emptyPoster = document.getElementById("emptyPoster");
+    const captionOverlay = document.getElementById("captionOverlay");
+    const seekSlider = document.getElementById("seekSlider");
+    const timecode = document.getElementById("timecode");
+    const statusLine = document.getElementById("statusLine");
+
+    const playBtn = document.getElementById("playBtn");
+    const pauseBtn = document.getElementById("pauseBtn");
+    const stopBtn = document.getElementById("stopBtn");
+    const toggleCaptions = document.getElementById("toggleCaptions");
+    const toggleGuides = document.getElementById("toggleGuides");
+    const toggleWavSync = document.getElementById("toggleWavSync");
+    const volumeSlider = document.getElementById("volumeSlider");
+    const localVideoInput = document.getElementById("localVideoInput");
+    const downloadVideoBtn = document.getElementById("downloadVideoBtn");
+    const downloadSrtBtn = document.getElementById("downloadSrtBtn");
+
+    let hasVideoSource = false;
+    let simTimer = null;
+    let simTime = 0;
+    let activeVideoUrl = "output/final_video.mp4";
+    const TARGET_DURATION = 120;
+
+    function parseSrtTime(ts) {
+      const [hms, ms] = ts.trim().split(",");
+      const [h, m, s] = hms.split(":").map(Number);
+      return h * 3600 + m * 60 + s + Number(ms) / 1000;
+    }
+
+    const cues = SRT_CONTENT.trim().split(/\n\s*\n/).map((block) => {
+      const lines = block.split("\n");
+      const [startStr, endStr] = lines[1].split("-->");
+      return {
+        start: parseSrtTime(startStr),
+        end: parseSrtTime(endStr),
+        text: lines.slice(2).join("\n"),
+      };
+    });
+
+    function formatClock(sec) {
+      const clamped = Math.max(0, Math.floor(sec));
+      const m = String(Math.floor(clamped / 60)).padStart(2, "0");
+      const s = String(clamped % 60).padStart(2, "0");
+      return `${m}:${s}`;
+    }
+
+    function syncUI(currentSec) {
+      const total = hasVideoSource && isFinite(video.duration) ? video.duration : TARGET_DURATION;
+      seekSlider.max = total;
+      seekSlider.value = currentSec;
+      timecode.textContent = `${formatClock(currentSec)} / ${formatClock(total)}`;
+
+      if (!toggleCaptions.checked) {
+        captionOverlay.classList.remove("active");
+        captionOverlay.textContent = "";
+        return;
+      }
+
+      const activeCue = cues.find((c) => currentSec >= c.start && currentSec < c.end);
+      if (activeCue) {
+        captionOverlay.textContent = activeCue.text;
+        captionOverlay.classList.add("active");
+      } else {
+        captionOverlay.textContent = "";
+        captionOverlay.classList.remove("active");
+      }
+    }
+
+    function stopSimTimer() {
+      if (simTimer) {
+        clearInterval(simTimer);
+        simTimer = null;
+      }
+    }
+
+    video.addEventListener("loadedmetadata", () => {
+      hasVideoSource = true;
+      emptyPoster.classList.add("hidden");
+      syncUI(0);
+      if (video.audioTracks && video.audioTracks.length === 0) {
+        toggleWavSync.checked = true;
+      }
+      statusLine.textContent = "Video stream loaded (1080x1920, stereo audio ready).";
+    });
+
+    video.addEventListener("error", () => {
+      hasVideoSource = false;
+      emptyPoster.classList.remove("hidden");
+      statusLine.textContent = "Video file not yet rendered; running interactive caption timeline preview.";
+    });
+
+    video.addEventListener("timeupdate", () => {
+      if (hasVideoSource) {
+        syncUI(video.currentTime);
+        if (toggleWavSync.checked && Math.abs(audioSync.currentTime - video.currentTime) > 0.25) {
+          audioSync.currentTime = video.currentTime;
+        }
+      }
+    });
+
+    video.addEventListener("play", () => {
+      if (toggleWavSync.checked) {
+        video.muted = true;
+        audioSync.volume = Number(volumeSlider.value);
+        audioSync.currentTime = video.currentTime;
+        audioSync.play().catch(() => {});
+      }
+    });
+
+    video.addEventListener("pause", () => {
+      audioSync.pause();
+    });
+
+    playBtn.addEventListener("click", () => {
+      if (hasVideoSource) {
+        const vol = Number(volumeSlider.value);
+        if (toggleWavSync.checked) {
+          video.muted = true;
+          audioSync.muted = vol === 0;
+          audioSync.volume = vol;
+          audioSync.currentTime = video.currentTime;
+          audioSync.play().catch(() => {});
+        } else {
+          video.muted = vol === 0;
+          video.volume = vol;
+        }
+        video.play();
+        statusLine.textContent = toggleWavSync.checked
+          ? "Playing rendered video with synced WAV audio."
+          : "Playing rendered video with MP4 AAC audio.";
+      } else {
+        stopSimTimer();
+        simTimer = setInterval(() => {
+          simTime += 0.1;
+          if (simTime >= TARGET_DURATION) {
+            simTime = TARGET_DURATION;
+            stopSimTimer();
+          }
+          syncUI(simTime);
+        }, 100);
+        statusLine.textContent = "Previewing subtitle timeline (load MP4 when rendered).";
+      }
+    });
+
+    pauseBtn.addEventListener("click", () => {
+      if (hasVideoSource) {
+        video.pause();
+        audioSync.pause();
+      } else {
+        stopSimTimer();
+      }
+      statusLine.textContent = "Paused.";
+    });
+
+    stopBtn.addEventListener("click", () => {
+      if (hasVideoSource) {
+        video.pause();
+        video.currentTime = 0;
+        audioSync.pause();
+        audioSync.currentTime = 0;
+      } else {
+        stopSimTimer();
+        simTime = 0;
+      }
+      syncUI(0);
+      statusLine.textContent = "Stopped and reset to 00:00.";
+    });
+
+    seekSlider.addEventListener("input", (e) => {
+      const val = Number(e.target.value);
+      if (hasVideoSource) {
+        video.currentTime = val;
+        if (toggleWavSync.checked) audioSync.currentTime = val;
+      } else {
+        simTime = val;
+      }
+      syncUI(val);
+    });
+
+    toggleCaptions.addEventListener("change", () => {
+      syncUI(hasVideoSource ? video.currentTime : simTime);
+    });
+
+    toggleGuides.addEventListener("change", () => {
+      stageFrame.classList.toggle("show-guides", toggleGuides.checked);
+    });
+
+    toggleWavSync.addEventListener("change", () => {
+      const vol = Number(volumeSlider.value);
+      if (toggleWavSync.checked) {
+        video.muted = true;
+        audioSync.volume = vol;
+        audioSync.currentTime = video.currentTime;
+        if (!video.paused) audioSync.play().catch(() => {});
+      } else {
+        audioSync.pause();
+        video.muted = vol === 0;
+        video.volume = vol;
+      }
+    });
+
+    volumeSlider.addEventListener("input", () => {
+      const vol = Number(volumeSlider.value);
+      if (toggleWavSync.checked) {
+        audioSync.volume = vol;
+        audioSync.muted = vol === 0;
+      } else {
+        video.volume = vol;
+        video.muted = vol === 0;
+      }
+    });
+
+    localVideoInput.addEventListener("change", (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const objUrl = URL.createObjectURL(file);
+      activeVideoUrl = objUrl;
+      video.src = objUrl;
+      video.load();
+      statusLine.textContent = `Loaded local file: ${file.name}`;
+    });
+
+    downloadVideoBtn.addEventListener("click", () => {
+      if (!hasVideoSource) {
+        statusLine.textContent = "No rendered MP4 loaded yet. Render output/final_video.mp4 or load a local MP4 first.";
+        return;
+      }
+      const a = document.createElement("a");
+      a.href = activeVideoUrl;
+      a.download = "filial_duty_vs_dreams_1080x1920_30fps.mp4";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      statusLine.textContent = "Downloading video...";
+    });
+
+    downloadSrtBtn.addEventListener("click", () => {
+      const blob = new Blob([SRT_CONTENT + "\n"], { type: "application/x-subrip;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "subtitles.srt";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      statusLine.textContent = "Downloaded subtitles.srt.";
+    });
+
+    syncUI(0);
+  </script>
+</body>
+</html>
